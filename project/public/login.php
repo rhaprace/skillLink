@@ -36,44 +36,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="../src/loader/index.css">
 </head>
-<body class="bg-white md:bg-black min-h-screen antialiased">
+<body class="bg-gray-50 min-h-screen antialiased">
 
 <div class="min-h-screen flex flex-col md:flex-row">
-    <div class="hidden md:flex md:w-2/5 bg-black p-8 lg:p-12 items-center border-r border-gray-200 overflow-y-auto">
-        <div class="w-full max-w-sm mx-auto">
-            <div class="mb-8 lg:mb-12 animate-fade-in">
-                <a href="index.php" class="text-2xl lg:text-3xl font-bold text-white transition-colors hover:opacity-80">SkillLink</a>
-            </div>
-            <h1 class="text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 text-white animate-fade-in" style="animation-delay: 100ms;">Welcome Back</h1>
-            <p class="text-base lg:text-lg text-gray-300 mb-6 lg:mb-8 animate-fade-in" style="animation-delay: 200ms;">
-                Access your personalized learning dashboard. Track your progress, complete lessons, and test your knowledge with interactive quizzes.
-            </p>
-            <div class="space-y-3 lg:space-y-4 text-sm text-white">
-                <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 300ms;">
-                    <div class="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 text-xs">1</div>
-                    <p class="leading-6">Learn at your own pace with engaging content</p>
-                </div>
-                <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 400ms;">
-                    <div class="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 text-xs">2</div>
-                    <p class="leading-6">Test your knowledge and track improvement</p>
-                </div>
-                <div class="flex items-center gap-3 animate-slide-up" style="animation-delay: 500ms;">
-                    <div class="w-6 h-6 border-2 border-white rounded-full flex items-center justify-center flex-shrink-0 text-xs">3</div>
-                    <p class="leading-6">Monitor your learning journey</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php
+    $title = 'Welcome Back';
+    $subtitle = 'Access your personalized learning dashboard and continue your journey';
+    $illustration = 'login.svg';
+    $theme = 'dark';
+    include '../src/includes/auth-sidebar.php';
+    ?>
 
-    <div class="w-full md:w-3/5 bg-gray-50 flex items-center justify-center overflow-y-auto py-8 md:py-0">
-        <div class="w-full max-w-md px-6 py-8 md:p-12">
-            <div class="mb-6 md:mb-8 animate-fade-in">
-                <a href="index.php" class="text-2xl md:text-3xl font-bold text-black transition-colors hover:opacity-80">SkillLink</a>
-            </div>
-
-            <div class="mb-6 md:mb-8 animate-fade-in" style="animation-delay: 100ms;">
-                <h2 class="text-2xl md:text-3xl font-bold text-black mb-2">Sign In</h2>
-                <p class="text-gray-600 text-sm md:text-base">Continue your learning journey</p>
+    <div class="w-full md:w-1/2 bg-gray-50 flex items-center justify-center overflow-y-auto py-8 md:py-0">
+        <div class="w-full max-w-md px-6 py-8 md:p-10 lg:p-12">
+            <div class="mb-8 md:mb-10 animate-fade-in">
+                <h2 class="text-3xl md:text-4xl font-bold text-black mb-3">Sign In</h2>
+                <p class="text-gray-600 text-base md:text-lg">Continue your learning journey</p>
             </div>
 
             <?php if ($error): ?>
