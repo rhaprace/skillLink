@@ -20,14 +20,11 @@ require_once '../src/includes/header.php';
         <div class="container-custom w-full">
             <div class="w-full">
                 <div class="mb-6 animate-fade-in">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold text-black mb-1">
-                                Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>
-                            </h1>
-                            <p class="text-sm text-gray-600">Continue your learning journey</p>
-                        </div>
-                        <a href="logout.php" class="btn btn-ghost btn-sm">Logout</a>
+                    <div>
+                        <h1 class="text-2xl font-bold text-black mb-1">
+                            Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>
+                        </h1>
+                        <p class="text-sm text-gray-600">Continue your learning journey</p>
                     </div>
                 </div>
 

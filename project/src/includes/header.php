@@ -23,20 +23,20 @@
                         <span class="text-xl font-bold text-black">SkillLink</span>
                     </a>
                 </div>
-                <div class="flex items-center gap-6">
+                <div class="flex items-center gap-2 md:gap-4 lg:gap-6">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <a href="index.php" class="nav-link">Dashboard</a>
+                        <a href="index.php" class="nav-link hidden sm:block">Dashboard</a>
                         <a href="books.php" class="nav-link">Books</a>
-                        <a href="my-library.php" class="nav-link">My Library</a>
-                        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
+                        <a href="my-library.php" class="nav-link hidden sm:block">Library</a>
+                        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
                             <span class="text-sm font-medium text-black"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
                         </div>
-                        <a href="logout.php" class="btn btn-ghost btn-sm">
+                        <a href="logout.php" class="btn btn-ghost btn-sm whitespace-nowrap">
                             Logout
                         </a>
                     <?php else: ?>
                         <a href="login.php" class="nav-link">Login</a>
-                        <a href="register.php" class="btn btn-primary btn-sm">Get Started</a>
+                        <a href="register.php" class="btn btn-primary btn-sm whitespace-nowrap">Get Started</a>
                     <?php endif; ?>
                 </div>
             </div>

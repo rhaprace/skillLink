@@ -1,23 +1,21 @@
 .container-custom {
     max-width: 100%;
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: var(--spacing-xl);
-    padding-right: var(--spacing-xl);
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
 }
 
 @media (min-width: 640px) {
     .container-custom {
-        padding-left: var(--spacing-2xl);
-        padding-right: var(--spacing-2xl);
+        padding-left: var(--spacing-lg);
+        padding-right: var(--spacing-lg);
     }
 }
 
 @media (min-width: 1024px) {
     .container-custom {
-        padding-left: var(--spacing-3xl);
-        padding-right: var(--spacing-3xl);
+        padding-left: var(--spacing-xl);
+        padding-right: var(--spacing-xl);
     }
 }
 

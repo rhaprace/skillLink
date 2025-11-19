@@ -65,16 +65,24 @@ class Book
     }
 
     public function search($query) {
-        $sql = "SELECT b.*, c.name as category_name, c.slug as category_slug 
-                FROM books b 
-                LEFT JOIN categories c ON b.category_id = c.id 
-                WHERE b.title LIKE :query OR b.description LIKE :query 
+        $sql = "SELECT b.*, c.name as category_name, c.slug as category_slug
+                FROM books b
+                LEFT JOIN categories c ON b.category_id = c.id
+                WHERE b.title LIKE :query1
+                   OR b.description LIKE :query2
+                   OR b.author LIKE :query3
+                   OR c.name LIKE :query4
                 ORDER BY b.created_at DESC";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $searchTerm = '%' . $query . '%';
-        $stmt->execute([':query' => $searchTerm]);
-        
+        $stmt->execute([
+            ':query1' => $searchTerm,
+            ':query2' => $searchTerm,
+            ':query3' => $searchTerm,
+            ':query4' => $searchTerm
+        ]);
+
         return $stmt->fetchAll();
     }
 

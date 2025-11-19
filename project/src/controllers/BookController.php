@@ -17,7 +17,7 @@ class BookController
 
     public function getAllBooks($categoryId = null, $limit = null, $offset = 0) {
         if ($categoryId) {
-            return $this->bookModel->getByCategory($categoryId, $limit);
+            return $this->bookModel->getByCategory($categoryId, $limit, $offset);
         }
         return $this->bookModel->getAll($limit, $offset);
     }
@@ -37,8 +37,8 @@ class BookController
         return $book;
     }
 
-    public function searchBooks($query) {
-        return $this->bookModel->search($query);
+    public function searchBooks($query, $limit = null, $offset = 0) {
+        return $this->bookModel->search($query, $limit, $offset);
     }
 
     public function getFeaturedBooks($limit = 6) {
@@ -73,12 +73,20 @@ class BookController
         }
     }
 
-    public function getUserLibrary($userId, $status = null) {
+    public function getUserLibrary($userId, $status = null, $limit = null, $offset = 0) {
         if (!$userId) {
             return [];
         }
 
-        return $this->progressModel->getAllUserProgress($userId, $status);
+        return $this->progressModel->getAllUserProgress($userId, $status, $limit, $offset);
+    }
+
+    public function getUserLibraryCount($userId, $status = null) {
+        if (!$userId) {
+            return 0;
+        }
+
+        return $this->progressModel->getUserProgressCount($userId, $status);
     }
 
     public function getUserDashboardStats($userId) {

@@ -22,29 +22,64 @@ class UserProgress
         return $stmt->fetch();
     }
 
-    public function getAllUserProgress($userId, $status = null) {
-        $sql = "SELECT up.*, b.title, b.description, b.cover_image, b.author, 
-                       b.difficulty_level, b.estimated_duration, c.name as category_name 
-                FROM user_progress up 
-                JOIN books b ON up.book_id = b.id 
-                LEFT JOIN categories c ON b.category_id = c.id 
+    public function getAllUserProgress($userId, $status = null, $limit = null, $offset = 0) {
+        $sql = "SELECT up.*, b.title, b.description, b.cover_image, b.author,
+                       b.difficulty_level, b.estimated_duration, c.name as category_name
+                FROM user_progress up
+                JOIN books b ON up.book_id = b.id
+                LEFT JOIN categories c ON b.category_id = c.id
                 WHERE up.user_id = :user_id";
-        
+
         if ($status) {
             $sql .= " AND up.status = :status";
         }
-        
+
         $sql .= " ORDER BY up.last_accessed DESC";
-        
+
+        if ($limit !== null) {
+            $sql .= " LIMIT :limit OFFSET :offset";
+        }
+
         $stmt = $this->pdo->prepare($sql);
         $params = [':user_id' => $userId];
-        
+
         if ($status) {
             $params[':status'] = $status;
         }
-        
-        $stmt->execute($params);
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        }
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+
+        $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function getUserProgressCount($userId, $status = null) {
+        $sql = "SELECT COUNT(*) as total
+                FROM user_progress up
+                WHERE up.user_id = :user_id";
+
+        if ($status) {
+            $sql .= " AND up.status = :status";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $params = [':user_id' => $userId];
+
+        if ($status) {
+            $params[':status'] = $status;
+        }
+
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result['total'] : 0;
     }
 
     public function updateProgress($userId, $bookId, $progressPercentage) {

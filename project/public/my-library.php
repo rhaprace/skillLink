@@ -12,14 +12,28 @@ $pageTitle = 'My Library - SkillLink';
 $userId = $_SESSION['user_id'];
 $bookController = new BookController($pdo);
 
+$booksPerPage = 12;
+$currentPage = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
+$offset = ($currentPage - 1) * $booksPerPage;
+
 $statusFilter = isset($_GET['status']) ? $_GET['status'] : null;
 
-$userBooks = $bookController->getUserLibrary($userId, $statusFilter);
+$viewMode = isset($_GET['view']) ? $_GET['view'] : 'grid';
+
+$totalBooks = $bookController->getUserLibraryCount($userId, $statusFilter);
+$totalPages = ceil($totalBooks / $booksPerPage);
+
+$userBooks = $bookController->getUserLibrary($userId, $statusFilter, $booksPerPage, $offset);
 
 $stats = $bookController->getUserDashboardStats($userId);
 
+$showingFrom = $totalBooks > 0 ? $offset + 1 : 0;
+$showingTo = min($offset + $booksPerPage, $totalBooks);
+
 require_once '../src/includes/header.php';
 ?>
+
+<link rel="stylesheet" href="assets/css/library.css">
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="container-custom">
@@ -27,8 +41,7 @@ require_once '../src/includes/header.php';
             <h1 class="text-4xl font-bold text-black mb-2">My Library</h1>
             <p class="text-gray-600">Track your learning progress and continue where you left off</p>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 animate-slide-up" style="animation-delay: 50ms;">
+        <div class="library-stats-grid animate-slide-up" style="animation-delay: 50ms;">
             <div class="card p-6">
                 <p class="text-sm text-gray-600 uppercase tracking-wide mb-1">Total Books</p>
                 <p class="text-3xl font-bold text-black"><?php echo $stats['total_books']; ?></p>
@@ -45,25 +58,52 @@ require_once '../src/includes/header.php';
 
         <div class="mb-6 animate-slide-up" style="animation-delay: 100ms;">
             <div class="card p-4">
-                <div class="flex flex-wrap gap-2">
-                    <a href="my-library.php" 
-                       class="px-4 py-2 rounded-lg text-sm font-medium transition-colors <?php echo !$statusFilter ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                        All Books
-                    </a>
-                    <a href="my-library.php?status=in_progress" 
-                       class="px-4 py-2 rounded-lg text-sm font-medium transition-colors <?php echo $statusFilter === 'in_progress' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                        In Progress
-                    </a>
-                    <a href="my-library.php?status=completed" 
-                       class="px-4 py-2 rounded-lg text-sm font-medium transition-colors <?php echo $statusFilter === 'completed' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                        Completed
-                    </a>
+                <div class="library-filter-bar">
+                    <div class="library-filter-buttons">
+                        <a href="my-library.php?view=<?php echo $viewMode; ?>"
+                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo !$statusFilter ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                            All
+                        </a>
+                        <a href="my-library.php?status=in_progress&view=<?php echo $viewMode; ?>"
+                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo $statusFilter === 'in_progress' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                            In Progress
+                        </a>
+                        <a href="my-library.php?status=completed&view=<?php echo $viewMode; ?>"
+                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo $statusFilter === 'completed' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
+                            Completed
+                        </a>
+                    </div>
+
+                    <div class="library-controls">
+                        <?php if ($totalBooks > 0): ?>
+                            <span class="results-counter">
+                                Showing <?php echo $showingFrom; ?>-<?php echo $showingTo; ?> of <?php echo $totalBooks; ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <div class="view-toggle">
+                            <a href="?<?php echo http_build_query(array_merge($_GET, ['view' => 'grid'])); ?>"
+                               class="view-toggle-btn <?php echo $viewMode === 'grid' ? 'active' : ''; ?>"
+                               title="Grid View">
+                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                                </svg>
+                            </a>
+                            <a href="?<?php echo http_build_query(array_merge($_GET, ['view' => 'list'])); ?>"
+                               class="view-toggle-btn <?php echo $viewMode === 'list' ? 'active' : ''; ?>"
+                               title="List View">
+                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <?php if (empty($userBooks)): ?>
-            <div class="card p-12 text-center animate-fade-in" style="animation-delay: 150ms;">
+            <div class="library-empty-state card animate-fade-in" style="animation-delay: 150ms;">
                 <p class="text-gray-500 text-lg mb-4">
                     <?php if ($statusFilter): ?>
                         No <?php echo str_replace('_', ' ', $statusFilter); ?> books found
@@ -74,69 +114,26 @@ require_once '../src/includes/header.php';
                 <a href="books.php" class="btn btn-primary">Browse Books</a>
             </div>
         <?php else: ?>
-            <div class="space-y-4">
-                <?php foreach ($userBooks as $index => $item): ?>
-                    <div class="card card-hover animate-slide-up" style="animation-delay: <?php echo 150 + ($index * 50); ?>ms;">
-                        <div class="p-6">
-                            <div class="flex flex-col md:flex-row gap-6">
-                                <div class="flex-1">
-                                    <?php if ($item['category_name']): ?>
-                                        <div class="mb-2">
-                                            <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                                                <?php echo htmlspecialchars($item['category_name']); ?>
-                                            </span>
-                                        </div>
-                                    <?php endif; ?>
 
-                                    <h3 class="text-xl font-bold text-black mb-2">
-                                        <?php echo htmlspecialchars($item['title']); ?>
-                                    </h3>
+            <?php if ($viewMode === 'grid'): ?>
+                <div class="library-grid-container view-transition">
+                    <?php foreach ($userBooks as $index => $item): ?>
+                        <?php require '../src/includes/components/library-book-card-grid.php'; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <div class="library-list-container view-transition">
+                    <?php foreach ($userBooks as $index => $item): ?>
+                        <?php require '../src/includes/components/library-book-card-list.php'; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
 
-                                    <?php if ($item['author']): ?>
-                                        <p class="text-sm text-gray-600 mb-3">
-                                            by <?php echo htmlspecialchars($item['author']); ?>
-                                        </p>
-                                    <?php endif; ?>
-
-                                    <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                                        <?php echo htmlspecialchars($item['description']); ?>
-                                    </p>
-
-                                    <div class="mb-3">
-                                        <div class="flex justify-between text-sm mb-1">
-                                            <span class="text-gray-600">Progress</span>
-                                            <span class="font-semibold text-black">
-                                                <?php echo round($item['progress_percentage']); ?>%
-                                            </span>
-                                        </div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2">
-                                            <div class="bg-black h-2 rounded-full transition-all" 
-                                                 style="width: <?php echo $item['progress_percentage']; ?>%">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex flex-wrap gap-4 text-xs text-gray-500">
-                                        <span>Last accessed: <?php echo date('M j, Y', strtotime($item['last_accessed'])); ?></span>
-                                        <span class="capitalize">Status: <?php echo str_replace('_', ' ', $item['status']); ?></span>
-                                        <?php if ($item['completed_at']): ?>
-                                            <span>Completed: <?php echo date('M j, Y', strtotime($item['completed_at'])); ?></span>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center">
-                                    <a href="book.php?id=<?php echo $item['book_id']; ?>" class="btn btn-primary whitespace-nowrap">
-                                        <?php echo $item['status'] === 'completed' ? 'Read Again' : 'Continue Reading'; ?>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+            <?php require '../src/includes/components/pagination.php'; ?>
         <?php endif; ?>
     </div>
 </div>
+
+<script src="assets/js/library-pagination.js"></script>
 
 <?php require_once '../src/includes/footer.php'; ?>
