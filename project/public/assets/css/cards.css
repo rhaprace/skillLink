@@ -35,10 +35,11 @@
     cursor: pointer;
 }
 
-.card-hover:hover {
+/* Hover effect disabled per user request */
+/* .card-hover:hover {
     box-shadow: var(--shadow-xl);
     transform: translateY(-4px);
-}
+} */
 
 .card-hover-lift {
     transition: all var(--transition-slow);

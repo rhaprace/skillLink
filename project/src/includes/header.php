@@ -25,6 +25,9 @@
                 </div>
                 <div class="flex items-center gap-6">
                     <?php if (isset($_SESSION['user_id'])): ?>
+                        <a href="index.php" class="nav-link">Dashboard</a>
+                        <a href="books.php" class="nav-link">Books</a>
+                        <a href="my-library.php" class="nav-link">My Library</a>
                         <div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
                             <span class="text-sm font-medium text-black"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
                         </div>

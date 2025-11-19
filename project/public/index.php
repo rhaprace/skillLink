@@ -1,13 +1,24 @@
 <?php
 session_start();
 $pageTitle = 'Home - SkillLink';
+
+if (isset($_SESSION['user_id'])) {
+    require_once '../src/config/database.php';
+    require_once '../src/controllers/BookController.php';
+
+    $bookController = new BookController($pdo);
+    $userStats = $bookController->getUserDashboardStats($_SESSION['user_id']);
+    $recentBooks = $bookController->getRecentlyAccessed($_SESSION['user_id'], 3);
+    $totalBooks = $bookController->getTotalBooksCount();
+}
+
 require_once '../src/includes/header.php';
 ?>
 
 <?php if (isset($_SESSION['user_id'])): ?>
-    <div class="h-screen overflow-hidden bg-white flex items-center">
+    <div class="min-h-screen bg-white py-8">
         <div class="container-custom w-full">
-            <div class="max-w-5xl mx-auto">
+            <div class="w-full">
                 <div class="mb-6 animate-fade-in">
                     <div class="flex items-center justify-between">
                         <div>
@@ -23,26 +34,71 @@ require_once '../src/includes/header.php';
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div class="card animate-slide-up" style="animation-delay: 50ms;">
                         <div class="p-4">
-                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">Lessons Completed</p>
-                            <p class="text-3xl font-bold text-black">0</p>
+                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">Books Started</p>
+                            <p class="text-3xl font-bold text-black"><?php echo $userStats['total_books']; ?></p>
                         </div>
                     </div>
                     <div class="card animate-slide-up" style="animation-delay: 100ms;">
                         <div class="p-4">
-                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">Quizzes Taken</p>
-                            <p class="text-3xl font-bold text-black">0</p>
+                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">In Progress</p>
+                            <p class="text-3xl font-bold text-black"><?php echo $userStats['in_progress_books']; ?></p>
                         </div>
                     </div>
                     <div class="card animate-slide-up" style="animation-delay: 150ms;">
                         <div class="p-4">
-                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">Average Score</p>
-                            <p class="text-3xl font-bold text-black">0%</p>
+                            <p class="text-xs text-gray-600 uppercase tracking-wide mb-1">Completed</p>
+                            <p class="text-3xl font-bold text-black"><?php echo $userStats['completed_books']; ?></p>
                         </div>
                     </div>
                 </div>
 
+                <?php if (!empty($recentBooks)): ?>
+                    <div class="mb-6 animate-slide-up" style="animation-delay: 200ms;">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-bold text-black">Continue Reading</h2>
+                            <a href="my-library.php" class="text-sm text-gray-600 hover:text-black">View All →</a>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <?php foreach ($recentBooks as $book): ?>
+                                <a href="book.php?id=<?php echo $book['book_id']; ?>" class="card card-hover">
+                                    <div class="p-4">
+                                        <h3 class="font-semibold text-black mb-2 line-clamp-2">
+                                            <?php echo htmlspecialchars($book['title']); ?>
+                                        </h3>
+                                        <p class="text-xs text-gray-600 mb-3">
+                                            <?php echo htmlspecialchars($book['category_name']); ?>
+                                        </p>
+                                        <div class="mb-2">
+                                            <div class="flex justify-between text-xs mb-1">
+                                                <span class="text-gray-600">Progress</span>
+                                                <span class="font-semibold text-black">
+                                                    <?php echo round($book['progress_percentage']); ?>%
+                                                </span>
+                                            </div>
+                                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                                <div class="bg-black h-1.5 rounded-full"
+                                                     style="width: <?php echo $book['progress_percentage']; ?>%">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="card animate-slide-up" style="animation-delay: 200ms;">
+                    <div class="card animate-slide-up" style="animation-delay: 250ms;">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-black mb-3">Quick Actions</h3>
+                            <div class="space-y-2">
+                                <a href="books.php" class="w-full btn btn-primary btn-sm block text-center">Browse Books</a>
+                                <a href="my-library.php" class="w-full btn btn-secondary btn-sm block text-center">My Library</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card animate-slide-up" style="animation-delay: 300ms;">
                         <div class="p-4">
                             <h3 class="font-semibold text-black mb-3">Account Details</h3>
                             <div class="space-y-2 text-sm">
@@ -57,24 +113,15 @@ require_once '../src/includes/header.php';
                             </div>
                         </div>
                     </div>
-                    <div class="card animate-slide-up" style="animation-delay: 250ms;">
-                        <div class="p-4">
-                            <h3 class="font-semibold text-black mb-3">Quick Actions</h3>
-                            <div class="space-y-2">
-                                <button class="w-full btn btn-primary btn-sm">Browse Lessons</button>
-                                <button class="w-full btn btn-secondary btn-sm">Take a Quiz</button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
 <?php else: ?>
-    <div class="h-screen overflow-hidden bg-white flex items-center">
+    <div class="min-h-screen bg-white py-8">
         <div class="container-custom w-full">
-            <div class="max-w-6xl mx-auto">
+            <div class="w-full">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div class="animate-fade-in">
                         <h1 class="text-5xl font-bold text-black mb-4 leading-tight">
@@ -93,26 +140,26 @@ require_once '../src/includes/header.php';
                     <div class="grid grid-cols-2 gap-4 animate-slide-up">
                         <div class="card">
                             <div class="p-6 text-center">
-                                <p class="text-4xl font-bold text-black mb-2">500+</p>
-                                <p class="text-sm text-gray-600">Lessons Available</p>
+                                <p class="text-4xl font-bold text-black mb-2"><?php echo $totalBooks; ?></p>
+                                <p class="text-sm text-gray-600">Books Available</p>
                             </div>
                         </div>
                         <div class="card">
                             <div class="p-6 text-center">
-                                <p class="text-4xl font-bold text-black mb-2">200+</p>
-                                <p class="text-sm text-gray-600">Practice Quizzes</p>
+                                <p class="text-4xl font-bold text-black mb-2">8</p>
+                                <p class="text-sm text-gray-600">Categories</p>
                             </div>
                         </div>
                         <div class="card">
                             <div class="p-6 text-center">
-                                <p class="text-4xl font-bold text-black mb-2">10k+</p>
-                                <p class="text-sm text-gray-600">Active Learners</p>
+                                <p class="text-4xl font-bold text-black mb-2">100%</p>
+                                <p class="text-sm text-gray-600">Free Access</p>
                             </div>
                         </div>
                         <div class="card">
                             <div class="p-6 text-center">
-                                <p class="text-4xl font-bold text-black mb-2">95%</p>
-                                <p class="text-sm text-gray-600">Success Rate</p>
+                                <p class="text-4xl font-bold text-black mb-2">24/7</p>
+                                <p class="text-sm text-gray-600">Learn Anytime</p>
                             </div>
                         </div>
                     </div>
