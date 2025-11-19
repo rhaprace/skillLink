@@ -2,9 +2,15 @@
 session_start();
 require_once '../src/config/database.php';
 require_once '../src/controllers/AuthController.php';
+require_once '../src/models/Admin.php';
 
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php?info=' . urlencode('You are already logged in.'));
+    exit();
+}
+
+if (isset($_SESSION['admin_id'])) {
+    header('Location: admin/dashboard.php?info=' . urlencode('You are already logged in.'));
     exit();
 }
 
@@ -12,6 +18,22 @@ $pageTitle = 'Login - SkillLink';
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $adminModel = new Admin($pdo);
+    $admin = $adminModel->authenticate($email, $password);
+
+    if ($admin) {
+        $_SESSION['admin_id'] = $admin['id'];
+        $_SESSION['admin_username'] = $admin['username'];
+        $_SESSION['admin_email'] = $admin['email'];
+        $_SESSION['admin_role'] = $admin['role'];
+
+        header('Location: admin/dashboard.php?success=' . urlencode('Welcome back, ' . $admin['username'] . '!'));
+        exit();
+    }
+
     $authController = new AuthController($pdo);
     $result = $authController->login($_POST);
 
