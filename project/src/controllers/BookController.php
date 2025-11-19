@@ -120,4 +120,17 @@ class BookController
     public function getTotalBooksCount() {
         return $this->bookModel->getTotalCount();
     }
+
+    public function startBook($userId, $bookId) {
+        if (!$userId || !$bookId) {
+            return false;
+        }
+
+        $book = $this->bookModel->getById($bookId);
+        if (!$book) {
+            return false;
+        }
+
+        return $this->progressModel->createInitialProgress($userId, $bookId);
+    }
 }

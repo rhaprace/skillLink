@@ -2,14 +2,15 @@
 session_start();
 $pageTitle = 'Home - SkillLink';
 
-if (isset($_SESSION['user_id'])) {
-    require_once '../src/config/database.php';
-    require_once '../src/controllers/BookController.php';
+require_once '../src/config/database.php';
+require_once '../src/controllers/BookController.php';
 
-    $bookController = new BookController($pdo);
+$bookController = new BookController($pdo);
+$totalBooks = $bookController->getTotalBooksCount();
+
+if (isset($_SESSION['user_id'])) {
     $userStats = $bookController->getUserDashboardStats($_SESSION['user_id']);
     $recentBooks = $bookController->getRecentlyAccessed($_SESSION['user_id'], 3);
-    $totalBooks = $bookController->getTotalBooksCount();
 }
 
 require_once '../src/includes/header.php';

@@ -25,6 +25,8 @@ if ($userId) {
 require_once '../src/includes/header.php';
 ?>
 
+<link rel="stylesheet" href="assets/css/library.css">
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="container-custom">
         <div class="mb-8 animate-fade-in">
@@ -86,84 +88,11 @@ require_once '../src/includes/header.php';
             <button id="resetSearch" class="btn btn-primary">Clear Search</button>
         </div>
 
-        <div id="booksGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <?php foreach ($books as $index => $book): ?>
-                    <?php
-                    $hasProgress = isset($userProgressMap[$book['id']]);
-                    $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
-                    ?>
-                    <a href="book.php?id=<?php echo $book['id']; ?>"
-                       class="book-card card card-hover animate-slide-up"
-                       data-book-id="<?php echo $book['id']; ?>"
-                       data-category-id="<?php echo $book['category_id'] ?? ''; ?>"
-                       data-title="<?php echo htmlspecialchars($book['title']); ?>"
-                       data-author="<?php echo htmlspecialchars($book['author'] ?? ''); ?>"
-                       data-description="<?php echo htmlspecialchars($book['description']); ?>"
-                       data-category="<?php echo htmlspecialchars($book['category_name'] ?? ''); ?>"
-                       style="animation-delay: <?php echo 200 + ($index * 50); ?>ms;">
-                        <div class="p-6">
-                            <div class="mb-3 flex items-center justify-between gap-2">
-                                <?php if ($book['category_name']): ?>
-                                    <span class="book-category inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                                        <?php echo htmlspecialchars($book['category_name']); ?>
-                                    </span>
-                                <?php endif; ?>
-
-                                <?php if ($hasProgress): ?>
-                                    <?php if ($progress['status'] === 'completed'): ?>
-                                        <span class="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                                            ✓ Completed
-                                        </span>
-                                    <?php elseif ($progress['status'] === 'in_progress'): ?>
-                                        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                                            In Progress
-                                        </span>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-                            </div>
-
-                            <h3 class="book-title text-xl font-bold text-black mb-2 line-clamp-2">
-                                <?php echo htmlspecialchars($book['title']); ?>
-                            </h3>
-
-                            <?php if ($book['author']): ?>
-                                <p class="text-sm text-gray-600 mb-3">
-                                    by <span class="book-author"><?php echo htmlspecialchars($book['author']); ?></span>
-                                </p>
-                            <?php endif; ?>
-
-                            <p class="book-description text-gray-600 text-sm mb-4 line-clamp-3">
-                                <?php echo htmlspecialchars($book['description']); ?>
-                            </p>
-
-                            <?php if ($hasProgress && $progress['progress_percentage'] > 0): ?>
-                                <div class="mb-4">
-                                    <div class="flex justify-between text-xs mb-1">
-                                        <span class="text-gray-600">Your Progress</span>
-                                        <span class="font-semibold text-black">
-                                            <?php echo round($progress['progress_percentage']); ?>%
-                                        </span>
-                                    </div>
-                                    <div class="w-full bg-gray-200 rounded-full h-1.5">
-                                        <div class="bg-black h-1.5 rounded-full transition-all"
-                                             style="width: <?php echo $progress['progress_percentage']; ?>%">
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php endif; ?>
-
-                            <div class="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
-                                <span class="flex items-center gap-1">
-                                    ⏱️ <?php echo $book['estimated_duration']; ?> min
-                                </span>
-                                <span class="capitalize px-2 py-1 bg-gray-50 rounded">
-                                    <?php echo htmlspecialchars($book['difficulty_level']); ?>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                <?php endforeach; ?>
-            </div>
+        <div id="booksGrid" class="library-grid-container">
+            <?php foreach ($books as $index => $book): ?>
+                <?php require '../src/includes/components/book-card-grid.php'; ?>
+            <?php endforeach; ?>
+        </div>
     </div>
 </div>
 

@@ -82,20 +82,38 @@ class UserProgress
         return $result ? (int)$result['total'] : 0;
     }
 
+    public function createInitialProgress($userId, $bookId) {
+        $existing = $this->getUserProgress($userId, $bookId);
+
+        if ($existing) {
+            return false;
+        }
+
+        $sql = "INSERT INTO user_progress
+                (user_id, book_id, progress_percentage, status, last_accessed)
+                VALUES (:user_id, :book_id, 0, 'in_progress', NOW())";
+
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute([
+            ':user_id' => $userId,
+            ':book_id' => $bookId
+        ]);
+    }
+
     public function updateProgress($userId, $bookId, $progressPercentage) {
         $existing = $this->getUserProgress($userId, $bookId);
-        
+
         if ($existing) {
             $status = $progressPercentage >= 100 ? 'completed' : 'in_progress';
             $completedAt = $progressPercentage >= 100 ? date('Y-m-d H:i:s') : null;
-            
-            $sql = "UPDATE user_progress 
-                    SET progress_percentage = :progress, 
-                        status = :status, 
+
+            $sql = "UPDATE user_progress
+                    SET progress_percentage = :progress,
+                        status = :status,
                         completed_at = :completed_at,
-                        last_accessed = NOW() 
+                        last_accessed = NOW()
                     WHERE user_id = :user_id AND book_id = :book_id";
-            
+
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute([
                 ':progress' => $progressPercentage,
@@ -107,11 +125,11 @@ class UserProgress
         } else {
             $status = $progressPercentage >= 100 ? 'completed' : ($progressPercentage > 0 ? 'in_progress' : 'not_started');
             $completedAt = $progressPercentage >= 100 ? date('Y-m-d H:i:s') : null;
-            
-            $sql = "INSERT INTO user_progress 
-                    (user_id, book_id, progress_percentage, status, completed_at) 
+
+            $sql = "INSERT INTO user_progress
+                    (user_id, book_id, progress_percentage, status, completed_at)
                     VALUES (:user_id, :book_id, :progress, :status, :completed_at)";
-            
+
             $stmt = $this->pdo->prepare($sql);
             return $stmt->execute([
                 ':user_id' => $userId,
