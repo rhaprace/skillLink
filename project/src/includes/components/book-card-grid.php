@@ -7,18 +7,18 @@ $hasProgress = isset($userProgressMap[$book['id']]);
 $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
 ?>
 
-<div class="book-card library-card-grid card card-hover animate-slide-up"
+<div class="card card-hover book-card animate-slide-up view-transition"
      data-book-id="<?php echo $book['id']; ?>"
      data-category-id="<?php echo $book['category_id'] ?? ''; ?>"
      data-title="<?php echo htmlspecialchars($book['title']); ?>"
      data-author="<?php echo htmlspecialchars($book['author'] ?? ''); ?>"
      data-description="<?php echo htmlspecialchars($book['description']); ?>"
      data-category="<?php echo htmlspecialchars($book['category_name'] ?? ''); ?>"
-     style="animation-delay: <?php echo 150 + ($index * 30); ?>ms;">
-    <div class="library-card-content">
+     style="animation-delay: <?php echo 200 + ($index * 50); ?>ms;">
+    <div class="p-6">
         <div class="mb-3 flex items-center justify-between gap-2" style="min-height: 28px;">
             <?php if (!empty($book['category_name'])): ?>
-                <span class="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                <span class="book-category inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                     <?php echo htmlspecialchars($book['category_name']); ?>
                 </span>
             <?php endif; ?>
@@ -36,19 +36,19 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
             <?php endif; ?>
         </div>
 
-        <h3 class="text-lg font-bold text-black mb-2 line-clamp-2" style="min-height: 3.5rem;">
+        <h3 class="book-title text-lg font-bold text-black mb-2 line-clamp-2" style="min-height: 3.5rem;">
             <?php echo htmlspecialchars($book['title']); ?>
         </h3>
 
         <div class="mb-3" style="min-height: 20px;">
             <?php if (!empty($book['author'])): ?>
                 <p class="text-sm text-gray-600">
-                    by <?php echo htmlspecialchars($book['author']); ?>
+                    by <span class="book-author"><?php echo htmlspecialchars($book['author']); ?></span>
                 </p>
             <?php endif; ?>
         </div>
 
-        <p class="text-gray-600 text-sm mb-4 line-clamp-2" style="min-height: 2.5rem;">
+        <p class="book-description text-gray-600 text-sm mb-4 line-clamp-2" style="min-height: 2.5rem;">
             <?php echo htmlspecialchars($book['description']); ?>
         </p>
 
@@ -74,13 +74,13 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
             <span class="flex items-center gap-1">
                 ⏱️ <?php echo $book['estimated_duration']; ?> min
             </span>
-            <span class="capitalize px-2 py-1 bg-gray-50 rounded">
+            <span class="book-difficulty capitalize px-2 py-1 bg-gray-50 rounded">
                 <?php echo htmlspecialchars($book['difficulty_level']); ?>
             </span>
         </div>
     </div>
 
-    <div class="library-card-footer">
+    <div class="p-4">
         <?php if ($userId): ?>
             <?php if ($hasProgress): ?>
                 <a href="book.php?id=<?php echo $book['id']; ?>"
