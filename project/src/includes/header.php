@@ -6,6 +6,7 @@
     <title><?php echo $pageTitle ?? 'SkillLink'; ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/notifications.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -15,6 +16,7 @@
     </style>
   </head>
   <body class="bg-white min-h-screen antialiased">
+    <?php require_once __DIR__ . '/components/notification-drawer.php'; ?>
     <nav class="nav">
         <div class="container-custom">
             <div class="flex justify-between items-center h-16">
@@ -28,9 +30,9 @@
                         <a href="index.php" class="nav-link hidden sm:block">Dashboard</a>
                         <a href="books.php" class="nav-link">Books</a>
                         <a href="my-library.php" class="nav-link hidden sm:block">Library</a>
-                        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
+                        <a href="profile.php" class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <span class="text-sm font-medium text-black"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
-                        </div>
+                        </a>
                         <a href="logout.php" class="btn btn-ghost btn-sm whitespace-nowrap">
                             Logout
                         </a>

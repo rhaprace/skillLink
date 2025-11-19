@@ -1,0 +1,240 @@
+.notification-container {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+}
+
+.notification {
+    pointer-events: auto;
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border-left: 4px solid;
+    transform: translateY(-120%);
+    opacity: 0;
+    animation: slideDown var(--transition-slow) ease-out;
+}
+
+.notification.show {
+    transform: translateY(0);
+    opacity: 1;
+    animation: slideUp var(--transition-slow) ease-out;
+}
+
+.notification.hide {
+    transform: translateY(-120%);
+    opacity: 0;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-top: 2px;
+}
+
+.notification-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1f2937;
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+.notification-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: all var(--transition-base);
+    padding: 0;
+    margin-top: 2px;
+}
+
+.notification-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #1f2937;
+}
+
+.notification-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.notification.notification-success {
+    border-left-color: #10b981;
+    background: #f0fdf4;
+}
+
+.notification-success .notification-icon {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.notification.notification-error {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.notification-error .notification-icon {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.notification.notification-warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+.notification-warning .notification-icon {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.notification.notification-info {
+    border-left-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.notification-info .notification-icon {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    overflow: hidden;
+}
+
+.notification-progress-bar {
+    height: 100%;
+    background: currentColor;
+    animation: progress var(--transition-slow) ease-out;
+}
+
+.notification-success .notification-progress-bar {
+    background: #10b981;
+}
+
+.notification-error .notification-progress-bar {
+    background: #ef4444;
+}
+
+.notification-warning .notification-progress-bar {
+    background: #f59e0b;
+}
+
+.notification-info .notification-progress-bar {
+    background: #3b82f6;
+}
+
+.notification:hover .notification-progress-bar {
+    animation-play-state: paused !important;
+}
+
+@media (max-width: 640px) {
+    .notification-container {
+        top: 56px;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .notification {
+        padding: 12px;
+        border-radius: 8px;
+        max-width: 100%;
+    }
+
+    .notification-message {
+        font-size: 13px;
+    }
+
+    .notification-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .notification-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .notification-close {
+        width: 20px;
+        height: 20px;
+    }
+
+    .notification-close svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+.notification:focus-within {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+@keyframes slideDown {
+    from {
+        transform: translateY(-120%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-120%);
+        opacity: 0;
+    }
+}
+

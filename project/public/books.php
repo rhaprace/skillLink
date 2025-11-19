@@ -2,9 +2,11 @@
 session_start();
 require_once '../src/config/database.php';
 require_once '../src/controllers/BookController.php';
+require_once '../src/controllers/BookmarkController.php';
 
 $pageTitle = 'Browse Books - SkillLink';
 $bookController = new BookController($pdo);
+$bookmarkController = new BookmarkController($pdo);
 $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 $categoryId = isset($_GET['category']) ? intval($_GET['category']) : null;
@@ -13,6 +15,7 @@ $books = $bookController->getAllBooks($categoryId);
 $categories = $bookController->getCategories();
 
 $userProgressMap = [];
+$userBookmarkIds = [];
 if ($userId) {
     require_once '../src/models/UserProgress.php';
     $progressModel = new UserProgress($pdo);
@@ -20,6 +23,8 @@ if ($userId) {
     foreach ($allProgress as $progress) {
         $userProgressMap[$progress['book_id']] = $progress;
     }
+
+    $userBookmarkIds = $bookmarkController->getUserBookmarkIds($userId);
 }
 
 require_once '../src/includes/header.php';
@@ -98,5 +103,6 @@ require_once '../src/includes/header.php';
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 <script src="assets/js/book-search.js"></script>
+<script src="assets/js/bookmarks.js"></script>
 
 <?php require_once '../src/includes/footer.php'; ?>

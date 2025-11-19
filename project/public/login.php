@@ -4,7 +4,7 @@ require_once '../src/config/database.php';
 require_once '../src/controllers/AuthController.php';
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: index.php?info=' . urlencode('You are already logged in.'));
     exit();
 }
 
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $result = $authController->login($_POST);
 
     if ($result['success']) {
-        header('Location: index.php');
+        header('Location: index.php?success=' . urlencode('Welcome back! You have successfully logged in.'));
         exit();
     } else {
         $error = $result['message'];
@@ -34,9 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
     <link rel="stylesheet" href="../src/loader/index.css">
 </head>
 <body class="bg-gray-50 min-h-screen antialiased">
+    <?php require_once '../src/includes/components/notification-drawer.php'; ?>
 
 <div class="min-h-screen flex flex-col md:flex-row">
     <?php
@@ -54,13 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="text-gray-600 text-base md:text-lg">Continue your learning journey</p>
             </div>
 
-            <?php if ($error): ?>
-                <div class="alert alert-error mb-6 animate-slide-up" style="animation-delay: 150ms;">
-                    <span><?php echo htmlspecialchars($error); ?></span>
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" action="login.php" class="space-y-4 md:space-y-5 animate-slide-up" style="animation-delay: 200ms;">
+            <form method="POST" action="login.php" class="space-y-4 md:space-y-5 animate-slide-up" style="animation-delay: 150ms;">
                 <div class="form-group">
                     <label class="form-label" for="email">Email address</label>
                     <input
@@ -109,5 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<script src="assets/js/notifications.js"></script>
+<?php if ($error): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        notifications.error('<?php echo addslashes($error); ?>');
+    });
+</script>
+<?php endif; ?>
 </body>
 </html>

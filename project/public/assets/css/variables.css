@@ -3,9 +3,10 @@
     --color-primary-light: #333333;
     
     --color-secondary: #000000;
-    --color-success: #000000;
-    --color-danger: #000000;
-    --color-warning: #000000;
+    --color-success: #10b981;
+    --color-danger: #dc2626;
+    --color-warning: #f59e0b;
+    --color-info: #3b82f6;
     
     --color-bg-primary: #FFFFFF;
     --color-bg-secondary: #FAFAFA;

@@ -9,5 +9,7 @@
             </p>
         </div>
     </footer>
+    <script src="assets/js/modal.js"></script>
+    <script src="assets/js/notifications.js"></script>
 </body>
 </html>

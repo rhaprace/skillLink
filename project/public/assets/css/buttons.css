@@ -160,11 +160,47 @@
     gap: var(--spacing-sm);
 }
 
+.bookmark-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: all var(--transition-base);
+    padding: 0.5rem;
+    border-radius: 9999px;
+}
+
+.bookmark-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--color-primary);
+}
+
+.bookmark-btn:active {
+    transform: scale(0.95);
+}
+
+.bookmark-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bookmark-btn.bookmarked {
+    color: var(--color-warning);
+}
+
+.bookmark-btn.bookmarked:hover {
+    color: var(--color-warning);
+}
+
+.bookmark-icon {
+    transition: all var(--transition-base);
+}
+
 @media (max-width: 640px) {
     .btn {
         width: 100%;
     }
-    
+
     .btn-sm-block {
         width: 100%;
         display: flex;

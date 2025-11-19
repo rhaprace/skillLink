@@ -58,6 +58,11 @@
     box-shadow: var(--shadow-glow);
 }
 
+.card-danger {
+    border: 2px solid #fee2e2;
+    background-color: #fef2f2;
+}
+
 .card-header {
     padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-md) var(--spacing-xl);
 }

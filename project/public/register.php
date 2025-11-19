@@ -4,20 +4,19 @@ require_once '../src/config/database.php';
 require_once '../src/controllers/AuthController.php';
 
 if (isset($_SESSION['user_id'])) {
-    header('Location: index.php');
+    header('Location: index.php?info=' . urlencode('You are already logged in.'));
     exit();
 }
 
 $pageTitle = 'Register - SkillLink';
 $error = '';
-$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $authController = new AuthController($pdo);
     $result = $authController->register($_POST);
 
     if ($result['success']) {
-        $success = $result['message'];
+        header('Location: login.php?success=' . urlencode($result['message']));
     } else {
         $error = $result['message'];
     }
@@ -34,9 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
     <link rel="stylesheet" href="../src/loader/index.css">
 </head>
 <body class="bg-gray-50 min-h-screen antialiased">
+    <?php require_once '../src/includes/components/notification-drawer.php'; ?>
 
 <div class="min-h-screen flex flex-col md:flex-row">
     <?php
@@ -53,21 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2 class="text-3xl md:text-4xl font-bold text-black mb-3">Create Account</h2>
                 <p class="text-gray-600 text-base md:text-lg">Start your learning journey today</p>
             </div>
-
-            <?php if ($error): ?>
-                <div class="alert alert-error mb-6 animate-slide-up" style="animation-delay: 150ms;">
-                    <span><?php echo htmlspecialchars($error); ?></span>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($success): ?>
-                <div class="alert alert-success mb-6 animate-slide-up">
-                    <div>
-                        <span><?php echo htmlspecialchars($success); ?></span>
-                        <a href="login.php" class="underline font-semibold ml-1">Login here</a>
-                    </div>
-                </div>
-            <?php endif; ?>
 
             <form method="POST" action="register.php" class="space-y-4 md:space-y-5 animate-slide-up" style="animation-delay: 100ms;">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -144,5 +130,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<script src="assets/js/notifications.js"></script>
+<?php if ($error): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        notifications.error('<?php echo addslashes($error); ?>');
+    });
+</script>
+<?php endif; ?>
+<?php if ($success): ?>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        notifications.success('<?php echo addslashes($success); ?> You can now login.', 7000);
+    });
+</script>
+<?php endif; ?>
 </body>
 </html>

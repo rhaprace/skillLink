@@ -15,24 +15,38 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
      data-description="<?php echo htmlspecialchars($book['description']); ?>"
      data-category="<?php echo htmlspecialchars($book['category_name'] ?? ''); ?>"
      style="animation-delay: <?php echo 200 + ($index * 50); ?>ms;">
-    <div class="p-6">
-        <div class="mb-3 flex items-center justify-between gap-2" style="min-height: 28px;">
-            <?php if (!empty($book['category_name'])): ?>
-                <span class="book-category inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
-                    <?php echo htmlspecialchars($book['category_name']); ?>
-                </span>
-            <?php endif; ?>
-
-            <?php if ($hasProgress): ?>
-                <?php if ($progress['status'] === 'completed'): ?>
-                    <span class="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-                        ✓ Completed
-                    </span>
-                <?php elseif ($progress['status'] === 'in_progress'): ?>
-                    <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                        In Progress
+    <div class="p-6 relative">
+        <div class="mb-3 flex items-start justify-between gap-2" style="min-height: 28px;">
+            <div class="flex flex-wrap items-center gap-2">
+                <?php if (!empty($book['category_name'])): ?>
+                    <span class="book-category inline-block px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                        <?php echo htmlspecialchars($book['category_name']); ?>
                     </span>
                 <?php endif; ?>
+
+                <?php if ($hasProgress): ?>
+                    <?php if ($progress['status'] === 'completed'): ?>
+                        <span class="inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                            Read completed
+                        </span>
+                    <?php elseif ($progress['status'] === 'in_progress'): ?>
+                        <span class="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                            Learning in progress
+                        </span>
+                    <?php endif; ?>
+                <?php endif; ?>
+            </div>
+
+            <?php if ($userId): ?>
+                <button
+                    class="bookmark-btn flex-shrink-0 p-1.5 rounded-full hover:bg-gray-100 transition-colors"
+                    data-book-id="<?php echo $book['id']; ?>"
+                    data-bookmarked="<?php echo isset($userBookmarkIds) && in_array($book['id'], $userBookmarkIds) ? 'true' : 'false'; ?>"
+                    title="<?php echo isset($userBookmarkIds) && in_array($book['id'], $userBookmarkIds) ? 'Remove bookmark' : 'Add bookmark'; ?>">
+                    <svg class="w-5 h-5 bookmark-icon" fill="<?php echo isset($userBookmarkIds) && in_array($book['id'], $userBookmarkIds) ? 'currentColor' : 'none'; ?>" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+                    </svg>
+                </button>
             <?php endif; ?>
         </div>
 
@@ -55,7 +69,7 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
         <?php if ($hasProgress && $progress['progress_percentage'] > 0): ?>
             <div class="mb-4">
                 <div class="flex justify-between text-sm mb-1">
-                    <span class="text-gray-600">Your Progress</span>
+                    <span class="text-gray-600">Progress</span>
                     <span class="font-semibold text-black">
                         <?php echo round($progress['progress_percentage']); ?>%
                     </span>
@@ -72,7 +86,7 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
 
         <div class="flex items-center justify-between text-xs text-gray-500">
             <span class="flex items-center gap-1">
-                ⏱️ <?php echo $book['estimated_duration']; ?> min
+                ⏱️ <?php echo $book['estimated_duration']; ?> mins
             </span>
             <span class="book-difficulty capitalize px-2 py-1 bg-gray-50 rounded">
                 <?php echo htmlspecialchars($book['difficulty_level']); ?>
@@ -85,18 +99,18 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
             <?php if ($hasProgress): ?>
                 <a href="book.php?id=<?php echo $book['id']; ?>"
                    class="btn btn-primary btn-sm w-full">
-                    Continue Reading
+                    Read
                 </a>
             <?php else: ?>
                 <a href="start-book.php?id=<?php echo $book['id']; ?>"
                    class="btn btn-primary btn-sm w-full">
-                    Start Learning
+                    Learn
                 </a>
             <?php endif; ?>
         <?php else: ?>
             <a href="login.php"
                class="btn btn-secondary btn-sm w-full">
-                Login to Start
+                Login to Read
             </a>
         <?php endif; ?>
     </div>
