@@ -7,7 +7,7 @@ $hasProgress = isset($userProgressMap[$book['id']]);
 $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
 ?>
 
-<div class="card card-hover book-card animate-slide-up view-transition"
+<div class="card card-hover book-card animate-slide-up view-transition overflow-hidden"
      data-book-id="<?php echo $book['id']; ?>"
      data-category-id="<?php echo $book['category_id'] ?? ''; ?>"
      data-title="<?php echo htmlspecialchars($book['title']); ?>"
@@ -15,6 +15,24 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
      data-description="<?php echo htmlspecialchars($book['description']); ?>"
      data-category="<?php echo htmlspecialchars($book['category_name'] ?? ''); ?>"
      style="animation-delay: <?php echo 200 + ($index * 50); ?>ms;">
+    <?php
+    if (!empty($book['cover_image']) && trim($book['cover_image']) !== '') {
+        $coverImage = $book['cover_image'];
+    } else {
+        $placeholderNum = (($book['id'] - 1) % 4) + 1;
+        $coverImage = 'placeholder-' . $placeholderNum . '.jpg';
+    }
+    ?>
+    <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+        <img
+            src="assets/images/book-covers/<?php echo htmlspecialchars($coverImage); ?>"
+            alt="<?php echo htmlspecialchars($book['title']); ?> cover"
+            class="w-full h-full object-cover"
+            onerror="this.src='assets/images/book-covers/placeholder-1.jpg'"
+        >
+        <!-- DEBUG: Book ID: <?php echo $book['id']; ?>, Calc: (<?php echo $book['id']; ?> - 1) % 4 + 1 = <?php echo $placeholderNum; ?>, Image: <?php echo $coverImage; ?> -->
+    </div>
+
     <div class="p-6 relative">
         <div class="mb-3 flex items-start justify-between gap-2" style="min-height: 28px;">
             <div class="flex flex-wrap items-center gap-2">
@@ -86,7 +104,7 @@ $progress = $hasProgress ? $userProgressMap[$book['id']] : null;
 
         <div class="flex items-center justify-between text-xs text-gray-500">
             <span class="flex items-center gap-1">
-                ⏱️ <?php echo $book['estimated_duration']; ?> mins
+                <?php echo $book['estimated_duration']; ?> mins
             </span>
             <span class="book-difficulty capitalize px-2 py-1 bg-gray-50 rounded">
                 <?php echo htmlspecialchars($book['difficulty_level']); ?>

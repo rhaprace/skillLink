@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'content' => trim($_POST['content'] ?? ''),
         'author' => trim($_POST['author'] ?? ''),
         'category_id' => $_POST['category_id'] ?? null,
-        'cover_image' => trim($_POST['cover_image'] ?? 'default-book.jpg'),
+        'cover_image' => !empty(trim($_POST['cover_image'] ?? '')) ? trim($_POST['cover_image']) : null,
         'difficulty_level' => $_POST['difficulty_level'] ?? 'beginner',
         'estimated_duration' => trim($_POST['estimated_duration'] ?? ''),
         'is_featured' => isset($_POST['is_featured']) ? 1 : 0

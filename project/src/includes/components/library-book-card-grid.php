@@ -4,8 +4,26 @@ if (!isset($item)) {
 }
 ?>
 
-<div class="library-card-grid card card-hover animate-slide-up"
+<div class="library-card-grid card card-hover animate-slide-up overflow-hidden"
      style="animation-delay: <?php echo 150 + ($index * 30); ?>ms;">
+
+    <?php
+    if (!empty($item['cover_image']) && trim($item['cover_image']) !== '') {
+        $coverImage = $item['cover_image'];
+    } else {
+        $placeholderNum = (($item['book_id'] - 1) % 4) + 1;
+        $coverImage = 'placeholder-' . $placeholderNum . '.jpg';
+    }
+    ?>
+    <div class="relative w-full h-48 bg-gray-100 overflow-hidden">
+        <img
+            src="assets/images/book-covers/<?php echo htmlspecialchars($coverImage); ?>"
+            alt="<?php echo htmlspecialchars($item['title']); ?> cover"
+            class="w-full h-full object-cover"
+            onerror="this.src='assets/images/book-covers/placeholder-1.jpg'"
+        >
+    </div>
+
     <div class="library-card-content">
         <div class="mb-3" style="min-height: 28px;">
             <?php if (!empty($item['category_name'])): ?>

@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS books (
     content LONGTEXT,
     author VARCHAR(100),
     category_id INT,
-    cover_image VARCHAR(255) DEFAULT 'default-book.jpg',
+    cover_image VARCHAR(255) DEFAULT NULL,
     difficulty_level ENUM('beginner', 'intermediate', 'advanced') DEFAULT 'beginner',
     estimated_duration INT DEFAULT 30 COMMENT 'Estimated reading time in minutes',
     is_featured BOOLEAN DEFAULT FALSE,
@@ -87,6 +87,37 @@ CREATE TABLE IF NOT EXISTS admins (
     INDEX idx_email (email),
     INDEX idx_username (username),
     INDEX idx_role (role)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE IF NOT EXISTS book_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    book_id INT NOT NULL,
+    rating INT NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    review_text TEXT,
+    helpful_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_book_review (user_id, book_id),
+    INDEX idx_user (user_id),
+    INDEX idx_book (book_id),
+    INDEX idx_rating (rating),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS review_helpful (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    review_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (review_id) REFERENCES book_reviews(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_review_helpful (user_id, review_id),
+    INDEX idx_review (review_id),
+    INDEX idx_user (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

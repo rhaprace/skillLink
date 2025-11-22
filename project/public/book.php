@@ -2,6 +2,7 @@
 session_start();
 require_once '../src/config/database.php';
 require_once '../src/controllers/BookController.php';
+require_once '../src/controllers/ReviewController.php';
 
 if (!isset($_GET['id'])) {
     header('Location: books.php');
@@ -12,6 +13,7 @@ $bookId = intval($_GET['id']);
 $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 $bookController = new BookController($pdo);
+$reviewController = new ReviewController($pdo);
 $book = $bookController->getBook($bookId, $userId);
 
 if (!$book) {
@@ -120,8 +122,12 @@ require_once '../src/includes/header.php';
                 <?php endif; ?>
             </div>
         </div>
+        <?php require_once '../src/includes/components/review-section.php'; ?>
     </div>
 </div>
+
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/reviews.js"></script>
 
 <style>
 .prose h1 { font-size: 2rem; font-weight: 700; margin-top: 2rem; margin-bottom: 1rem; color: #000; }

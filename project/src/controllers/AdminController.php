@@ -4,6 +4,7 @@ require_once __DIR__ . '/../models/Book.php';
 require_once __DIR__ . '/../models/Category.php';
 require_once __DIR__ . '/../models/Bookmark.php';
 require_once __DIR__ . '/../models/UserProgress.php';
+require_once __DIR__ . '/../models/Review.php';
 
 class AdminController
 {
@@ -13,6 +14,7 @@ class AdminController
     private $categoryModel;
     private $bookmarkModel;
     private $progressModel;
+    private $reviewModel;
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
@@ -21,27 +23,32 @@ class AdminController
         $this->categoryModel = new Category($pdo);
         $this->bookmarkModel = new Bookmark($pdo);
         $this->progressModel = new UserProgress($pdo);
+        $this->reviewModel = new Review($pdo);
     }
 
     public function getDashboardStats() {
         $stats = [];
-        
+
         $sql = "SELECT COUNT(*) as total FROM users";
         $stmt = $this->pdo->query($sql);
         $stats['total_users'] = $stmt->fetch()['total'];
-        
+
         $sql = "SELECT COUNT(*) as total FROM books";
         $stmt = $this->pdo->query($sql);
         $stats['total_books'] = $stmt->fetch()['total'];
-        
+
         $sql = "SELECT COUNT(*) as total FROM categories";
         $stmt = $this->pdo->query($sql);
         $stats['total_categories'] = $stmt->fetch()['total'];
-        
+
         $sql = "SELECT COUNT(*) as total FROM user_bookmarks";
         $stmt = $this->pdo->query($sql);
         $stats['total_bookmarks'] = $stmt->fetch()['total'];
-        
+
+        $sql = "SELECT COUNT(*) as total FROM book_reviews";
+        $stmt = $this->pdo->query($sql);
+        $stats['total_reviews'] = $stmt->fetch()['total'];
+
         return $stats;
     }
 
@@ -181,7 +188,7 @@ class AdminController
                 ':content' => $data['content'],
                 ':author' => $data['author'],
                 ':category_id' => $data['category_id'],
-                ':cover_image' => $data['cover_image'] ?? 'default-book.jpg',
+                ':cover_image' => $data['cover_image'] ?? null,
                 ':difficulty_level' => $data['difficulty_level'],
                 ':estimated_duration' => $data['estimated_duration'],
                 ':is_featured' => $data['is_featured'] ?? 0
@@ -373,6 +380,25 @@ class AdminController
                 return ['success' => true, 'message' => 'Bookmark deleted successfully'];
             } else {
                 return ['success' => false, 'message' => 'Failed to delete bookmark'];
+            }
+        } catch (Exception $e) {
+            return ['success' => false, 'message' => 'An error occurred'];
+        }
+    }
+
+    // Review Management Methods
+    public function getAllReviews($search = null, $bookId = null, $userId = null, $rating = null) {
+        return $this->reviewModel->getAllReviews($search, $bookId, $userId, $rating);
+    }
+
+    public function deleteReview($reviewId) {
+        try {
+            $result = $this->reviewModel->deleteByAdmin($reviewId);
+
+            if ($result) {
+                return ['success' => true, 'message' => 'Review deleted successfully'];
+            } else {
+                return ['success' => false, 'message' => 'Failed to delete review'];
             }
         } catch (Exception $e) {
             return ['success' => false, 'message' => 'An error occurred'];

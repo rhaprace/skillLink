@@ -19,7 +19,7 @@ require_once '../../src/includes/components/admin-header.php';
     <p class="text-gray-600">Overview of your SkillLink platform</p>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
     <?php
     $title = 'Total Users';
     $value = $stats['total_users'];
@@ -49,6 +49,14 @@ require_once '../../src/includes/components/admin-header.php';
     $value = $stats['total_bookmarks'];
     $icon = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>';
     $animationDelay = '150ms';
+    require '../../src/includes/components/admin-stats-card.php';
+    ?>
+
+    <?php
+    $title = 'Reviews';
+    $value = $stats['total_reviews'];
+    $icon = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>';
+    $animationDelay = '200ms';
     require '../../src/includes/components/admin-stats-card.php';
     ?>
 </div>

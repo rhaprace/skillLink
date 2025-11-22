@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'content' => trim($_POST['content'] ?? ''),
         'author' => trim($_POST['author'] ?? ''),
         'category_id' => $_POST['category_id'] ?? null,
-        'cover_image' => trim($_POST['cover_image'] ?? 'default-book.jpg'),
+        'cover_image' => !empty(trim($_POST['cover_image'] ?? '')) ? trim($_POST['cover_image']) : null,
         'difficulty_level' => $_POST['difficulty_level'] ?? 'beginner',
         'estimated_duration' => trim($_POST['estimated_duration'] ?? ''),
         'is_featured' => isset($_POST['is_featured']) ? 1 : 0
@@ -103,10 +103,10 @@ require_once '../../src/includes/components/admin-header.php';
                 </div>
 
                 <div class="form-group">
-                    <label for="cover_image" class="form-label">Cover Image</label>
-                    <input type="text" id="cover_image" name="cover_image" 
-                           class="form-input" placeholder="default-book.jpg">
-                    <p class="text-xs text-gray-500 mt-1">Enter image filename (must be in assets/images/)</p>
+                    <label for="cover_image" class="form-label">Cover Image (Optional)</label>
+                    <input type="text" id="cover_image" name="cover_image"
+                           class="form-input" placeholder="Leave empty to use placeholder">
+                    <p class="text-xs text-gray-500 mt-1">Enter image filename (e.g., my-book.jpg) or leave empty to auto-assign placeholder</p>
                 </div>
 
                 <div class="form-group">
