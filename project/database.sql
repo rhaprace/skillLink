@@ -6,10 +6,17 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    password_reset_token VARCHAR(255) DEFAULT NULL,
+    password_reset_expires DATETIME DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    terms_accepted_at DATETIME DEFAULT NULL,
+    remember_token VARCHAR(255) DEFAULT NULL,
+    remember_token_expires DATETIME DEFAULT NULL,
     INDEX idx_email (email),
-    INDEX idx_username (username)
+    INDEX idx_username (username),
+    INDEX idx_password_reset_token (password_reset_token),
+    INDEX idx_remember_token (remember_token)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -289,3 +296,13 @@ UPDATE users SET email = ''new@example.com'' WHERE id = 1;</code></pre>',
 
 INSERT INTO admins (username, email, password, role) VALUES
 ('admin', 'admin@skilllink.com', '$2y$10$UOu7LPjGGk1MqL9la3FPp.f1oy2Mxq7LkSkCxdkIAaQa1jYnKgRvC', 'super_admin');
+
+
+-- Password Reset Attempts Table (for rate limiting)
+CREATE TABLE IF NOT EXISTS password_reset_attempts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    attempt_time DATETIME NOT NULL,
+    ip_address VARCHAR(45) DEFAULT NULL,
+    INDEX idx_email_time (email, attempt_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

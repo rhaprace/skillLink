@@ -4,6 +4,12 @@ require_once '../src/config/database.php';
 require_once '../src/controllers/AuthController.php';
 require_once '../src/models/Admin.php';
 
+$authController = new AuthController($pdo);
+
+if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_id'])) {
+    $authController->checkRememberMe();
+}
+
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php?info=' . urlencode('You are already logged in.'));
     exit();
@@ -34,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    $authController = new AuthController($pdo);
     $result = $authController->login($_POST);
 
     if ($result['success']) {
@@ -109,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="checkbox" name="remember" class="form-checkbox">
                         <span class="text-gray-700">Remember me</span>
                     </label>
-                    <a href="#" class="text-black font-medium hover:underline">Forgot password?</a>
+                    <a href="forgot-password.php" class="text-black font-medium hover:underline">Forgot password?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-full mt-6">Sign In</button>
@@ -128,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script src="assets/js/notifications.js"></script>
+<script src="assets/js/password-toggle.js"></script>
 <?php if ($error): ?>
 <script>
     document.addEventListener('DOMContentLoaded', () => {

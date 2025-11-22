@@ -10,6 +10,7 @@ if (isset($_SESSION['user_id'])) {
 
 $pageTitle = 'Register - SkillLink';
 $error = '';
+$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $authController = new AuthController($pdo);
@@ -17,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($result['success']) {
         header('Location: login.php?success=' . urlencode($result['message']));
+        exit();
     } else {
         $error = $result['message'];
     }
@@ -111,9 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="flex items-start gap-2 pt-2">
-                    <input type="checkbox" id="terms" class="form-checkbox mt-0.5" required>
+                    <input type="checkbox" id="terms" name="terms" class="form-checkbox mt-0.5" required>
                     <label for="terms" class="text-xs sm:text-sm text-gray-600">
-                        I agree to the <a href="#" class="text-black font-medium hover:underline">Terms of Service</a> and <a href="#" class="text-black font-medium hover:underline">Privacy Policy</a>
+                        I agree to the <a href="terms.php" target="_blank" class="text-black font-medium hover:underline">Terms and Conditions</a>
                     </label>
                 </div>
 
@@ -131,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script src="assets/js/notifications.js"></script>
+<script src="assets/js/password-toggle.js"></script>
 <?php if ($error): ?>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
