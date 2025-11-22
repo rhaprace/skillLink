@@ -1,0 +1,92 @@
+/* Mobile Books Carousel Styles - Linear-inspired Design */
+
+/* Swiper container */
+.books-swiper {
+    width: 100%;
+    padding-bottom: 2rem;
+}
+
+/* Swiper slide */
+.books-swiper .swiper-slide {
+    height: auto;
+    display: flex;
+}
+
+/* Ensure book cards fill the slide */
+.books-swiper .swiper-slide .book-card {
+    width: 100%;
+    height: 100%;
+}
+
+/* Pagination dots - Linear style */
+.books-swiper .swiper-pagination {
+    position: relative;
+    bottom: 0;
+    margin-top: 1.5rem;
+}
+
+.books-swiper .swiper-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background: #d1d5db; /* gray-300 */
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.books-swiper .swiper-pagination-bullet-active {
+    background: #000000; /* black */
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* Dynamic bullets styling */
+.books-swiper .swiper-pagination-bullet-active-main {
+    background: #000000;
+}
+
+.books-swiper .swiper-pagination-bullet-active-prev,
+.books-swiper .swiper-pagination-bullet-active-next {
+    background: #6b7280; /* gray-500 */
+}
+
+/* Smooth transitions */
+.books-swiper .swiper-slide {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Slightly fade out non-active slides */
+.books-swiper .swiper-slide:not(.swiper-slide-active) {
+    opacity: 0.6;
+}
+
+/* Hide carousel on desktop */
+@media (min-width: 768px) {
+    #booksCarousel {
+        display: none !important;
+    }
+}
+
+/* Show carousel on mobile */
+@media (max-width: 767px) {
+    #booksGrid {
+        display: none !important;
+    }
+    
+    #booksCarousel {
+        display: block !important;
+    }
+}
+
+/* Accessibility: Focus styles */
+.books-swiper .swiper-slide:focus-visible {
+    outline: 2px solid #000000;
+    outline-offset: 4px;
+    border-radius: 12px;
+}
+
+/* Loading state */
+.books-swiper.swiper-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+

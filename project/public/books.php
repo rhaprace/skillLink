@@ -31,6 +31,8 @@ require_once '../src/includes/header.php';
 ?>
 
 <link rel="stylesheet" href="assets/css/library.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<link rel="stylesheet" href="assets/css/books-carousel.css">
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="container-custom">
@@ -92,17 +94,30 @@ require_once '../src/includes/header.php';
             <p class="text-gray-500 text-lg mb-4">No books found matching your search</p>
             <button id="resetSearch" class="btn btn-primary">Clear Search</button>
         </div>
-
-        <div id="booksGrid" class="library-grid-container">
+        <div id="booksGrid" class="library-grid-container hidden md:grid">
             <?php foreach ($books as $index => $book): ?>
                 <?php require '../src/includes/components/book-card-grid.php'; ?>
             <?php endforeach; ?>
+        </div>
+        <div id="booksCarousel" class="block md:hidden">
+            <div class="swiper books-swiper">
+                <div class="swiper-wrapper">
+                    <?php foreach ($books as $index => $book): ?>
+                        <div class="swiper-slide">
+                            <?php require '../src/includes/components/book-card-grid.php'; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="swiper-pagination mt-6"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="assets/js/book-search.js"></script>
 <script src="assets/js/bookmarks.js"></script>
+<script src="assets/js/books-carousel.js"></script>
 
 <?php require_once '../src/includes/footer.php'; ?>

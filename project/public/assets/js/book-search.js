@@ -4,15 +4,16 @@ class BookSearch {
         this.clearSearchBtn = document.getElementById('clearSearch');
         this.resetSearchBtn = document.getElementById('resetSearch');
         this.booksGrid = document.getElementById('booksGrid');
+        this.booksCarousel = document.getElementById('booksCarousel');
         this.noResults = document.getElementById('noResults');
         this.resultsCount = document.getElementById('resultsCount');
         this.bookCount = document.getElementById('bookCount');
         this.bookLabel = document.getElementById('bookLabel');
         this.categoryFilters = document.querySelectorAll('.category-filter');
-        
+
         this.currentCategory = options.initialCategory || 'all';
         this.allBookCards = Array.from(document.querySelectorAll('.book-card'));
-        
+
         this.initializeFuse();
         this.attachEventListeners();
     }
@@ -182,16 +183,28 @@ class BookSearch {
                 book.categoryId === this.currentCategory
             );
         }
-
-        this.allBookCards.forEach(card => card.classList.add('hidden'));
+        this.allBookCards.forEach(card => {
+            card.classList.add('hidden');
+            const swiperSlide = card.closest('.swiper-slide');
+            if (swiperSlide) {
+                swiperSlide.classList.add('hidden');
+            }
+        });
 
         filteredBooks.forEach(book => {
             book.element.classList.remove('hidden');
+            const swiperSlide = book.element.closest('.swiper-slide');
+            if (swiperSlide) {
+                swiperSlide.classList.remove('hidden');
+            }
             const matches = matchedIndices.get(book.id);
             this.applyHighlighting(book, matches, searchTerm);
         });
 
         this.updateUI(filteredBooks.length);
+        if (typeof window.updateBooksCarousel === 'function') {
+            window.updateBooksCarousel();
+        }
     }
 }
 
