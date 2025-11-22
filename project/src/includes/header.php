@@ -13,8 +13,6 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
-
-        /* Mobile menu styles */
         .mobile-menu {
             display: none;
             position: fixed;
@@ -56,8 +54,6 @@
   <body class="bg-white min-h-screen antialiased">
     <?php
     require_once __DIR__ . '/components/notification-drawer.php';
-
-    // Determine current page for active state
     $currentPage = basename($_SERVER['PHP_SELF']);
     ?>
     <nav class="nav">
@@ -92,13 +88,11 @@
                         </a>
                     <?php elseif (isset($_SESSION['user_id'])): ?>
                         <a href="index.php" class="nav-link hidden sm:block <?php echo $currentPage === 'index.php' ? 'nav-link-active' : ''; ?>">Dashboard</a>
-                        <a href="books.php" class="nav-link <?php echo $currentPage === 'books.php' ? 'nav-link-active' : ''; ?>">Books</a>
+                        <a href="books.php" class="nav-link hidden sm:block <?php echo $currentPage === 'books.php' ? 'nav-link-active' : ''; ?>">Books</a>
                         <a href="my-library.php" class="nav-link hidden md:block <?php echo $currentPage === 'my-library.php' ? 'nav-link-active' : ''; ?>">Library</a>
                         <a href="bookmarks.php" class="nav-link hidden lg:block <?php echo $currentPage === 'bookmarks.php' ? 'nav-link-active' : ''; ?>">Bookmarks</a>
                         <a href="archive.php" class="nav-link hidden lg:block <?php echo $currentPage === 'archive.php' ? 'nav-link-active' : ''; ?>">Archive</a>
-
-                        <!-- Mobile Menu Toggle Button -->
-                        <button id="mobileMenuToggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle mobile menu">
+                        <button id="mobileMenuToggle" class="sm:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" aria-label="Toggle mobile menu">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>
@@ -107,7 +101,7 @@
                         <a href="profile.php" class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <span class="text-sm font-medium text-black"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></span>
                         </a>
-                        <a href="logout.php" class="btn btn-ghost btn-sm whitespace-nowrap">
+                        <a href="logout.php" class="hidden sm:block btn btn-ghost btn-sm whitespace-nowrap">
                             Logout
                         </a>
                     <?php else: ?>
@@ -118,8 +112,6 @@
             </div>
         </div>
     </nav>
-
-    <!-- Mobile Menu for logged-in users -->
     <?php if (isset($_SESSION['user_id'])): ?>
     <div id="mobileMenu" class="mobile-menu">
         <a href="index.php" class="mobile-menu-link <?php echo $currentPage === 'index.php' ? 'active' : ''; ?>">
@@ -140,10 +132,12 @@
         <a href="profile.php" class="mobile-menu-link <?php echo $currentPage === 'profile.php' ? 'active' : ''; ?>">
             Profile
         </a>
+        <a href="logout.php" class="mobile-menu-link" style="color: #DC2626; font-weight: 600;">
+            Logout
+        </a>
     </div>
 
     <script>
-        // Mobile menu toggle
         document.addEventListener('DOMContentLoaded', function() {
             const mobileMenuToggle = document.getElementById('mobileMenuToggle');
             const mobileMenu = document.getElementById('mobileMenu');
@@ -151,8 +145,6 @@
             if (mobileMenuToggle && mobileMenu) {
                 mobileMenuToggle.addEventListener('click', function() {
                     mobileMenu.classList.toggle('active');
-
-                    // Update icon
                     const icon = this.querySelector('svg path');
                     if (mobileMenu.classList.contains('active')) {
                         this.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
@@ -160,16 +152,12 @@
                         this.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
                     }
                 });
-
-                // Close menu when clicking outside
                 document.addEventListener('click', function(event) {
                     if (!mobileMenuToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
                         mobileMenu.classList.remove('active');
                         mobileMenuToggle.innerHTML = '<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>';
                     }
                 });
-
-                // Close menu when clicking a link
                 const menuLinks = mobileMenu.querySelectorAll('.mobile-menu-link');
                 menuLinks.forEach(link => {
                     link.addEventListener('click', function() {
