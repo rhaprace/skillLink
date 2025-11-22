@@ -16,15 +16,23 @@ $categories = $bookController->getCategories();
 
 $userProgressMap = [];
 $userBookmarkIds = [];
+$completedBookIds = [];
 if ($userId) {
     require_once '../src/models/UserProgress.php';
     $progressModel = new UserProgress($pdo);
     $allProgress = $progressModel->getAllUserProgress($userId);
     foreach ($allProgress as $progress) {
         $userProgressMap[$progress['book_id']] = $progress;
+        if ($progress['status'] === 'completed' || $progress['progress_percentage'] >= 100) {
+            $completedBookIds[] = $progress['book_id'];
+        }
     }
 
     $userBookmarkIds = $bookmarkController->getUserBookmarkIds($userId);
+
+    $books = array_filter($books, function($book) use ($completedBookIds) {
+        return !in_array($book['id'], $completedBookIds);
+    });
 }
 
 require_once '../src/includes/header.php';

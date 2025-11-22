@@ -56,51 +56,7 @@ require_once '../src/includes/header.php';
             </div>
         </div>
 
-        <div class="mb-6 animate-slide-up" style="animation-delay: 100ms;">
-            <div class="card p-4">
-                <div class="library-filter-bar">
-                    <div class="library-filter-buttons">
-                        <a href="my-library.php?view=<?php echo $viewMode; ?>"
-                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo !$statusFilter ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                            All
-                        </a>
-                        <a href="my-library.php?status=in_progress&view=<?php echo $viewMode; ?>"
-                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo $statusFilter === 'in_progress' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                            In Progress
-                        </a>
-                        <a href="my-library.php?status=completed&view=<?php echo $viewMode; ?>"
-                           class="px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-medium transition-colors whitespace-nowrap <?php echo $statusFilter === 'completed' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?>">
-                            Completed
-                        </a>
-                    </div>
 
-                    <div class="library-controls">
-                        <?php if ($totalBooks > 0): ?>
-                            <span class="results-counter">
-                                Showing <?php echo $showingFrom; ?>-<?php echo $showingTo; ?> of <?php echo $totalBooks; ?>
-                            </span>
-                        <?php endif; ?>
-
-                        <div class="view-toggle">
-                            <a href="?<?php echo http_build_query(array_merge($_GET, ['view' => 'grid'])); ?>"
-                               class="view-toggle-btn <?php echo $viewMode === 'grid' ? 'active' : ''; ?>"
-                               title="Grid View">
-                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                                </svg>
-                            </a>
-                            <a href="?<?php echo http_build_query(array_merge($_GET, ['view' => 'list'])); ?>"
-                               class="view-toggle-btn <?php echo $viewMode === 'list' ? 'active' : ''; ?>"
-                               title="List View">
-                                <svg class="w-4 h-4 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <?php if (empty($userBooks)): ?>
             <div class="library-empty-state card animate-fade-in" style="animation-delay: 150ms;">
