@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['admin_id']) || !isset($_SESSION['admin_role'])) {
-    header('Location: ../admin/login.php');
+    header('Location: ../login.php?error=' . urlencode('Please log in as an admin to access this page.'));
     exit();
 }
 

@@ -8,7 +8,10 @@ require_once '../src/controllers/BookController.php';
 $bookController = new BookController($pdo);
 $totalBooks = $bookController->getTotalBooksCount();
 
-if (isset($_SESSION['user_id'])) {
+$isLoggedInUser = isset($_SESSION['user_id']);
+$isAdmin = isset($_SESSION['admin_id']);
+
+if ($isLoggedInUser) {
     $userStats = $bookController->getUserDashboardStats($_SESSION['user_id']);
     $recentBooks = $bookController->getRecentlyAccessed($_SESSION['user_id'], 3);
 }
@@ -16,7 +19,7 @@ if (isset($_SESSION['user_id'])) {
 require_once '../src/includes/header.php';
 ?>
 
-<?php if (isset($_SESSION['user_id'])): ?>
+<?php if ($isLoggedInUser): ?>
     <div class="min-h-screen bg-white py-8">
         <div class="container-custom w-full">
             <div class="w-full">
@@ -120,6 +123,22 @@ require_once '../src/includes/header.php';
     <div class="min-h-screen bg-white py-8">
         <div class="container-custom w-full">
             <div class="w-full">
+                <?php if ($isAdmin): ?>
+                    <div class="mb-6 animate-fade-in">
+                        <div class="card p-6 bg-gray-50 border border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <div>
+                                    <h3 class="font-semibold text-black">Admin Preview Mode</h3>
+                                    <p class="text-sm text-gray-600">You're viewing the public site as an admin. This is how visitors see SkillLink.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div class="animate-fade-in">
                         <h1 class="text-5xl font-bold text-black mb-4 leading-tight">
@@ -129,10 +148,17 @@ require_once '../src/includes/header.php';
                         <p class="text-lg text-gray-600 mb-8">
                             Access interactive lessons and quizzes designed to help you learn faster and retain more. Start your learning journey today.
                         </p>
-                        <div class="flex flex-col sm:flex-row gap-3">
-                            <a href="register.php" class="btn btn-primary">Get Started</a>
-                            <a href="login.php" class="btn btn-secondary">Sign In</a>
-                        </div>
+                        <?php if ($isAdmin): ?>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="admin/dashboard.php" class="btn btn-primary">Back to Admin Panel</a>
+                                <a href="books.php" class="btn btn-secondary">Browse Books</a>
+                            </div>
+                        <?php else: ?>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <a href="register.php" class="btn btn-primary">Get Started</a>
+                                <a href="login.php" class="btn btn-secondary">Sign In</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 animate-slide-up">

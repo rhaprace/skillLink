@@ -26,7 +26,28 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-2 md:gap-4 lg:gap-6">
-                    <?php if (isset($_SESSION['user_id'])): ?>
+                    <?php if (isset($_SESSION['admin_id'])): ?>
+                        <a href="books.php" class="nav-link">Books</a>
+                        <a href="admin/dashboard.php" class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="text-sm font-medium">Admin Panel</span>
+                        </a>
+                        <a href="admin/dashboard.php" class="lg:hidden btn btn-ghost btn-sm whitespace-nowrap">
+                            Admin
+                        </a>
+                        <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-lg">
+                            <span class="text-sm font-medium text-black"><?php echo htmlspecialchars($_SESSION['admin_username'] ?? 'Admin'); ?></span>
+                            <span class="px-2 py-0.5 bg-black text-white text-xs font-medium rounded-full">
+                                <?php echo ucfirst(str_replace('_', ' ', $_SESSION['admin_role'] ?? 'admin')); ?>
+                            </span>
+                        </div>
+                        <a href="admin/logout.php" class="btn btn-ghost btn-sm whitespace-nowrap">
+                            Logout
+                        </a>
+                    <?php elseif (isset($_SESSION['user_id'])): ?>
                         <a href="index.php" class="nav-link hidden sm:block">Dashboard</a>
                         <a href="books.php" class="nav-link">Books</a>
                         <a href="my-library.php" class="nav-link hidden sm:block">Library</a>
