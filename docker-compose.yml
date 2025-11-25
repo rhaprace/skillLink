@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # PHP Apache Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: skilllink-app
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./project:/var/www/html
+      - ./project/cache:/var/www/html/cache
+    environment:
+      - DB_HOST=db
+      - DB_NAME=my-app
+      - DB_USER=root
+      - DB_PASS=rootpassword
+      - GOOGLE_BOOKS_API_KEY=${GOOGLE_BOOKS_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - skilllink-network
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: skilllink-db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: my-app
+      MYSQL_USER: skilllink
+      MYSQL_PASSWORD: skilllink123
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./project/database.sql:/docker-entrypoint-initdb.d/database.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - skilllink-network
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: skilllink-phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      UPLOAD_LIMIT: 100M
+    depends_on:
+      - db
+    networks:
+      - skilllink-network
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  skilllink-network:
+    driver: bridge
+
